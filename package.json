@@ -1,0 +1,8 @@
+{
+  "name": "siapi-maintenance",
+  "version": "1.0.0",
+  "description": "SIAPI maintenance page",
+  "scripts": {
+    "start": "npx serve public -p 5012 -s"
+  }
+}
