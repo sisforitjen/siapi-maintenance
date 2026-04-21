@@ -1,142 +1,303 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIAPI | Sedang Dalam Pemeliharaan</title>
-    
-    <link rel="icon" href="favicon.ico">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .blob {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: #10b981;
-            filter: blur(90px);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0.2;
-            animation: move 25s infinite alternate;
-        }
-        @keyframes move {
-            from { transform: translate(-10%, -10%) scale(1); }
-            to { transform: translate(15%, 15%) scale(1.1); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAPI | Sedang Dalam Pemeliharaan</title>
+  <link rel="icon" href="favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated blobs */
+    .blob {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    .blob-tl {
+      background: #10b981;
+      top: -100px;
+      left: -100px;
+      animation: blobMove 25s infinite alternate;
+    }
+    .blob-br {
+      background: #059669;
+      bottom: -100px;
+      right: -100px;
+      animation: blobMove 25s infinite alternate-reverse;
+      animation-delay: -7s;
+    }
+    @keyframes blobMove {
+      from { transform: translate(-10%, -10%) scale(1); }
+      to   { transform: translate(15%, 15%) scale(1.1); }
+    }
+
+    /* Layout */
+    .screen {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Logo */
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .logo-wrap img {
+      height: 100px;
+    }
+
+    /* Branding text */
+    .brand-title {
+      font-size: 24pt;
+      font-weight: 800;
+      color: #059669;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .brand-subtitle {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #065f46;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Main heading */
+    h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    h1 span { color: #059669; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 2rem; }
+    }
+
+    /* Description */
+    .desc {
+      font-size: 1.0625rem;
+      color: #64748b;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      padding: 0 1rem;
+    }
+
+    /* Cards grid */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 480px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .card-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Status indicator */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .ping-wrap {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+    .ping-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #34d399;
+      opacity: 0.75;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .ping-dot {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    @keyframes ping {
+      0%   { transform: scale(1); opacity: 0.75; }
+      75%, 100% { transform: scale(2); opacity: 0; }
+    }
+
+    .status-text {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #047857;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Countdown */
+    .countdown {
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #1e293b;
+      letter-spacing: -0.04em;
+    }
+
+    /* Footer */
+    .footer {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(203, 213, 225, 0.6);
+    }
+    .footer p {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 overflow-hidden text-slate-800">
+<body>
 
-    <div class="blob top-0 left-0"></div>
-    <div class="blob bottom-0 right-0" style="background: #059669; animation-delay: -7s;"></div>
+  <div class="blob blob-tl"></div>
+  <div class="blob blob-br"></div>
 
-    <div class="min-h-screen flex items-center justify-center p-6">
-        <div class="max-w-xl w-full text-center">
-            <div class="mb-5 flex justify-center">
-                <img src="logokma.png" alt="Logo KMA" style="height: 100px;">
+  <div class="screen">
+    <div class="container">
+
+      <div class="logo-wrap">
+        <img src="logokma.png" alt="Logo KMA">
+      </div>
+
+      <div>
+        <p class="brand-title">Sistem Informasi Pengawasan Internal</p>
+        <p class="brand-subtitle">Kementerian Agama RI</p>
+      </div>
+
+      <h1>Sedang Dalam <span>Pemeliharaan</span></h1>
+
+      <p class="desc">
+        Layanan <b>SIAPI</b> sedang dalam proses pemeliharaan rutin.<br>
+        Harap tunggu sebentar, kami akan kembali sejenak lagi.
+      </p>
+
+      <div class="cards">
+        <div class="glass-card">
+          <p class="card-label">Status</p>
+          <div class="status-row">
+            <div class="ping-wrap">
+              <div class="ping-ring"></div>
+              <div class="ping-dot"></div>
             </div>
-            <div class="mb-6 leading-tight">
-                <h2 class="text-emerald-600 font-extrabold uppercase tracking-tight" style="font-size: 24pt;">
-                    Sistem Informasi Pengawasan Internal
-                </h2>
-                <p class="text-emerald-800 font-bold uppercase tracking-[0.2em] mt-1" style="font-size: 14pt;">
-                    Kementerian Agama RI
-                </p>
-            </div>
-
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 mb-6 tracking-tight">
-                Sedang Dalam <span class="text-emerald-600">Pemeliharaan</span>
-            </h1>
-            <p class="text-slate-500 text-lg mb-10 px-4 leading-relaxed">
-                Layanan <b>SIAPI</b> sedang dalam proses pemeliharaan rutin.<br> Harap tunggu sebentar, kami akan kembali sejenak lagi.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="glass p-6 rounded-3xl shadow-sm">
-                    <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-bold mb-2">Status</p>
-                    <div class="flex items-center justify-center space-x-2">
-                        <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                        </span>
-                        <p id="status-text" class="text-emerald-700 font-bold uppercase tracking-wide">
-                            Inisialisasi
-                        </p>
-                    </div>
-                </div>
-                <div class="glass p-6 rounded-3xl shadow-sm border-emerald-100">
-                    <p class="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-bold mb-2">Mulai Dalam</p>
-                    <p id="countdown" class="text-slate-800 font-black text-2xl tracking-tighter">15:00</p>
-                </div>
-            </div>
-
-            <div class="pt-8 border-t border-slate-200/60">
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.4em]">TIM SISTEM INFORMASI - ITJEN KEMENAG</p>
-            </div>
-
+            <p id="status-text" class="status-text">Inisialisasi</p>
+          </div>
         </div>
+        <div class="glass-card">
+          <p class="card-label">Mulai Dalam</p>
+          <p id="countdown" class="countdown">15:00</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Tim Sistem Informasi &mdash; Itjen Kemenag</p>
+      </div>
+
     </div>
+  </div>
 
-    <script>
-        function initMaintenanceTimer() {
-            const DURATION_SECONDS = 15 * 60; // 15 Menit
-            const STORAGE_KEY = 'siapi_countdown_target';
-            const timerDisplay = document.getElementById('countdown');
-            const statusDisplay = document.getElementById('status-text');
+  <script>
+    function initMaintenanceTimer() {
+      var DURATION_SECONDS = 15 * 60;
+      var STORAGE_KEY = 'siapi_countdown_target';
+      var timerDisplay = document.getElementById('countdown');
+      var statusDisplay = document.getElementById('status-text');
 
-            function getTargetTime() {
-                let target = localStorage.getItem(STORAGE_KEY);
-                const now = Math.floor(Date.now() / 1000);
-
-                if (!target || now >= parseInt(target)) {
-                    target = now + DURATION_SECONDS;
-                    localStorage.setItem(STORAGE_KEY, target);
-                }
-                return parseInt(target);
-            }
-
-            let targetTime = getTargetTime();
-
-            const updateDisplay = () => {
-                const now = Math.floor(Date.now() / 1000);
-                let remaining = targetTime - now;
-
-                if (remaining <= 0) {
-                    targetTime = now + DURATION_SECONDS;
-                    localStorage.setItem(STORAGE_KEY, targetTime);
-                    remaining = DURATION_SECONDS;
-                }
-
-                const mins = Math.floor(remaining / 60);
-                const secs = remaining % 60;
-
-                let currentStatus = "";
-                if (mins >= 10) {
-                    currentStatus = "Setting & Config";
-                } else if (mins >= 5) {
-                    currentStatus = "Build System";
-                } else {
-                    currentStatus = "Publishing";
-                }
-
-                statusDisplay.textContent = currentStatus;
-                timerDisplay.textContent = 
-                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            };
-
-            updateDisplay(); 
-            setInterval(updateDisplay, 1000);
+      function getTargetTime() {
+        var target = localStorage.getItem(STORAGE_KEY);
+        var now = Math.floor(Date.now() / 1000);
+        if (!target || now >= parseInt(target)) {
+          target = now + DURATION_SECONDS;
+          localStorage.setItem(STORAGE_KEY, target);
         }
+        return parseInt(target);
+      }
 
-        document.addEventListener('DOMContentLoaded', initMaintenanceTimer);
-    </script>
+      var targetTime = getTargetTime();
+
+      function updateDisplay() {
+        var now = Math.floor(Date.now() / 1000);
+        var remaining = targetTime - now;
+        if (remaining <= 0) {
+          targetTime = now + DURATION_SECONDS;
+          localStorage.setItem(STORAGE_KEY, targetTime);
+          remaining = DURATION_SECONDS;
+        }
+        var mins = Math.floor(remaining / 60);
+        var secs = remaining % 60;
+        var status = mins >= 10 ? 'Setting & Config' : mins >= 5 ? 'Build System' : 'Publishing';
+        statusDisplay.textContent = status;
+        timerDisplay.textContent =
+          (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+      }
+
+      updateDisplay();
+      setInterval(updateDisplay, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initMaintenanceTimer);
+  </script>
+
 </body>
 </html>
