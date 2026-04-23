@@ -280,9 +280,9 @@
         var now = Math.floor(Date.now() / 1000);
         var remaining = targetTime - now;
         if (remaining <= 0) {
-          targetTime = now + DURATION_SECONDS;
-          localStorage.setItem(STORAGE_KEY, targetTime);
-          remaining = DURATION_SECONDS;
+          localStorage.removeItem(STORAGE_KEY);
+          window.location.reload();
+          return;
         }
         var mins = Math.floor(remaining / 60);
         var secs = remaining % 60;
