@@ -1,6 +1,7 @@
 FROM node:18-alpine
 
-RUN apk add --no-cache tzdata && \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.dotsrc.org/g' /etc/apk/repositories && \
+    apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
     echo "Asia/Jakarta" > /etc/timezone
 
