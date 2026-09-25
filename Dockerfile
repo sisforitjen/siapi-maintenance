@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.dotsrc.org/g' /etc/apk/repositories && \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirror.leaseweb.com/g' /etc/apk/repositories && \
     apk add --no-cache tzdata && \
     cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
     echo "Asia/Jakarta" > /etc/timezone
